@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Assignment 1 - Design and Analysis of Algorithms </h1>
+
+<h2>Objective: </h2>
+<p>To consider a set of line segments given and compute all the intersection points of the given line segments. </p>
+
+<h2>Introduction and Running Time: </h2>
+<p>The code focuses on implementing sweeping lines algorithm described in Computational Geometry: Algorithms and Applications (by Mark de Berg). The code computes all intersections of lines in 2D plane with a time complexity of O((n+k)*logn) where k is the size of output and n is the number of segments. In fact, a stronger bound can be given to the complexity - O((n+I)logn) where I=number of intersections. The input data (start and end points of the line segment) can be given as an input via a text file to the Python Code which plots the lines and helps visualisation of the intersection points.</p>
+
+<h2>Methodology: </h2>
+<p> Object Oriented Language C++ has been used for this assignment. Any kind of library functions or STL classes have not been used. The implementation was done in 2 phases. In the first phase, status and event queue datastructures were implemented. These both were implemented using a Balanced Binary Search Tree. In the second phase, the rest of the algorithm was implemented and multiple test cases were passed to check the result.</p>
+<ul>
+    <li> Status Queue: The status of the sweep line is the set of segments intersecting it. This queue gets updated only at certain special points.   </li>
+    <li> Event Queue: The points at which the status queue gets updated are called as the event points. They are the end points of the line segment. Points of intersection between two line segments are also considered. </li>
+    <li> If the event point is the upper endpoint of a segment, then a new segment starts intersecting
+        the sweep line and must be added to the status. This segment is tested for
+        intersection against the ones already intersecting the sweep line. If the event
+        point is a lower endpoint, a segment stops intersecting the sweep line and must
+        be deleted from the status.   </li>
+    <li> Any line segment gets tested against 2 segments - the ones immediately to the left and right of the upper end point.   </li>
+    <li>Algorithm Summary: We imagine moving
+        a horizontal sweep line downwards over the plane. The sweep line halts at
+        certain event points - endpoints of the segments. The intersection points are computed on the
+        fly. While the sweep line moves, we maintain the ordered sequence of segments
+        intersected by it. When the sweep line halts at an event point the sequence of
+        segments changes and, depending on the type of event point, we have to take
+        several actions to update the status and detect intersections.</li>
+    <li>Event Queue (Q) Description: At each step, the
+        next event that will occur is popped from Q, and the event is returned so that it can be treated. This
+        event is the highest event below the sweep line. If two event points have the same
+        y-coordinate, then the one with smaller x-coordinate will be returned. Hence, the left endpoint of a horizontal
+        line can be considered as the upper endpoint and the right point as the lower endpoint.  
+        As a result the sweep line reaches the left endpoint of a horizontal segment just before reaching the
+        right endpoint. Apart from the pop operation, the event queue also allows insertions to account for new events. 
+        </li>
+    <li>Status Queue (T) Description: This data structure is the ordered
+        sequence of segments intersecting the sweep line. It is used to access the neighbors of a given segment s,
+        so that they can be tested for intersection with s. 
+        The status structure has been implemented in a dynamic manner since segments that
+        start or stop to intersect the sweep line must be inserted into or deleted
+        from the structure. Since there exists a well defined order, a balanced binary search tree is used to implement T.
+        </li>
+</ul>
+
+
+<h2>Sample Input and Visualisation: </h2>
+<h3>Sample Test Case 1: </h3>
+
+
+<table style="border: 1px solid black;">
+    <tr>
+      <th style="border: 1px solid black;">Starting Point</th>
+      <th style="border: 1px solid black;">Ending Point</th>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black; text-align: center;">(0, 0)</td>
+      <td style="border: 1px solid black; text-align: center;">(1, 2)</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; text-align: center;">(1, 2)</td>
+        <td style="border: 1px solid black; text-align: center;">(2, 3)</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid black; text-align: center;">(2, 3)</td>
+        <td style="border: 1px solid black; text-align: center;">(3, 2)</td>
+      </tr>
+      <tr>
+          <td style="border: 1px solid black; text-align: center;">(3, 2)</td>
+          <td style="border: 1px solid black; text-align: center;">(2, 1)</td>
+        </tr>
+
+        <tr>
+            <td style="border: 1px solid black; text-align: center;">(2, 1)</td>
+            <td style="border: 1px solid black; text-align: center;">(0, 0)</td>
+          </tr>
+          <tr>
+              <td style="border: 1px solid black; text-align: center;">(2, 1)</td>
+              <td style="border: 1px solid black; text-align: center;">(2, 3)</td>
+            </tr>
+
+
+            <tr>
+                <td style="border: 1px solid black; text-align: center;">(1, 2)</td>
+                <td style="border: 1px solid black; text-align: center;">(4, 2)</td>
+              </tr>
+              <tr>
+                <td style="border: 1px solid black; text-align: center;">(1, 1)</td>
+                <td style="border: 1px solid black; text-align: center;">(1, 1.5)</td>
+              </tr>
+              <tr>
+                  <td style="border: 1px solid black; text-align: center;">(1, 1.5)</td>
+                  <td style="border: 1px solid black; text-align: center;">(1.5, 1)</td>
+                </tr>
+        
+                <tr>
+                    <td style="border: 1px solid black; text-align: center;">(1.5, 1)</td>
+                    <td style="border: 1px solid black; text-align: center;">(1, 1)</td>
+                  </tr>
+                  <tr>
+                      <td style="border: 1px solid black; text-align: center;">(0, 0)</td>
+                      <td style="border: 1px solid black; text-align: center;">(3, 3)</td>
+                    </tr>
+  </table>
+  <img src="Capture.png" width="300" height="300" >
+
+
+
+<h3>Sample Test Case 2: </h3>
+<table style="border: 1px solid black;">
+    <tr>
+      <th style="border: 1px solid black;">Starting Point</th>
+      <th style="border: 1px solid black;">Ending Point</th>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black; text-align: center;">(-5, 1.5)</td>
+      <td style="border: 1px solid black; text-align: center;">(10, 1.5)</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; text-align: center;">(0, 0)</td>
+        <td style="border: 1px solid black; text-align: center;">(2, 0)</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid black; text-align: center;">(3, 3)</td>
+        <td style="border: 1px solid black; text-align: center;">(5, 3)</td>
+      </tr>
+      <tr>
+          <td style="border: 1px solid black; text-align: center;">(0, 0)</td>
+          <td style="border: 1px solid black; text-align: center;">(3, 3)</td>
+        </tr>
+
+        <tr>
+            <td style="border: 1px solid black; text-align: center;">(2, 0)</td>
+            <td style="border: 1px solid black; text-align: center;">(5, 3)</td>
+          </tr>
+  </table>
+  <img src="Capture1.png" width="300" height="300" >
+
+
+
+
+<h3>Sample Test Case 3: </h3>
+<table style="border: 1px solid black;">
+    <tr>
+      <th style="border: 1px solid black;">Starting Point</th>
+      <th style="border: 1px solid black;">Ending Point</th>
+    </tr>
+    <tr>
+      <td style="border: 1px solid black; text-align: center;">(5, 3)</td>
+      <td style="border: 1px solid black; text-align: center;">(6, 3)</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid black; text-align: center;">(-10, 0)</td>
+        <td style="border: 1px solid black; text-align: center;">(7, 1)</td>
+      </tr>
+      <tr>
+        <td style="border: 1px solid black; text-align: center;">(4, 5)</td>
+        <td style="border: 1px solid black; text-align: center;">(6, 2)</td>
+      </tr>
+      <tr>
+          <td style="border: 1px solid black; text-align: center;">(6, 6)</td>
+          <td style="border: 1px solid black; text-align: center;">(2, 2)</td>
+        </tr>
+
+        <tr>
+            <td style="border: 1px solid black; text-align: center;">(1, 0)</td>
+            <td style="border: 1px solid black; text-align: center;">(0, 1)</td>
+          </tr>
+  </table>
+  <img src="Capture2.png" width="300" height="300" >
+
+
+
+
+
+
+
+
+  <h3>Sample Test Case 4: </h3>
+  <table style="border: 1px solid black;">
+      <tr>
+        <th style="border: 1px solid black;">Starting Point</th>
+        <th style="border: 1px solid black;">Ending Point</th>
+      </tr>
+      <tr>
+        <td style="border: 1px solid black; text-align: center;">(1, 4)</td>
+        <td style="border: 1px solid black; text-align: center;">(5, 4)</td>
+      </tr>
+      <tr>
+          <td style="border: 1px solid black; text-align: center;">(1, 2)</td>
+          <td style="border: 1px solid black; text-align: center;">(5, 2)</td>
+        </tr>
+        <tr>
+          <td style="border: 1px solid black; text-align: center;">(1, 1)</td>
+          <td style="border: 1px solid black; text-align: center;">(5, 1)</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; text-align: center;">(4, 3)</td>
+            <td style="border: 1px solid black; text-align: center;">(2, 3)</td>
+          </tr>
+  
+          <tr>
+              <td style="border: 1px solid black; text-align: center;">(-1.5, -2)</td>
+              <td style="border: 1px solid black; text-align: center;">(1.5, -2)</td>
+            </tr>
+    </table>
+    <img src="Capture3.png" width="300" height="300">  
+
+
+
+
+    <h3>Sample Test Case 5: </h3>
+    <table style="border: 1px solid black;">
+        <tr>
+          <th style="border: 1px solid black;">Starting Point</th>
+          <th style="border: 1px solid black;">Ending Point</th>
+        </tr>
+        <tr>
+          <td style="border: 1px solid black; text-align: center;">(10, 2)</td>
+          <td style="border: 1px solid black; text-align: center;">(-5, 0)</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid black; text-align: center;">(0, 2)</td>
+            <td style="border: 1px solid black; text-align: center;">(5, 2)</td>
+          </tr>
+        <tr>
+            <td style="border: 1px solid black; text-align: center;">(1, 3)</td>
+            <td style="border: 1px solid black; text-align: center;">(5, 6)</td>
+          </tr>
+          <tr>
+            <td style="border: 1px solid black; text-align: center;">(-3, 5)</td>
+            <td style="border: 1px solid black; text-align: center;">(4, 2.5)</td>
+          </tr>
+          <tr>
+              <td style="border: 1px solid black; text-align: center;">(6, 1)</td>
+              <td style="border: 1px solid black; text-align: center;">(-3, -3)</td>
+            </tr>
+    
+            <tr>
+                <td style="border: 1px solid black; text-align: center;">(-1.5, -2)</td>
+                <td style="border: 1px solid black; text-align: center;">(1.5, -2)</td>
+              </tr>
+      </table>
+      <img src="Capture4.png" width="300" height="300">  
+
+</body>
+</html>
